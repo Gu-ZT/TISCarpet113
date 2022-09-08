@@ -71,6 +71,7 @@ public class GcaExtension {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        fakePlayerInventoryContainerMap.clear();
     }
 
     public static void onServerStart(MinecraftServer server) {
