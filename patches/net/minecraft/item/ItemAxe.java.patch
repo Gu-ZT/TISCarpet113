@@ -1,0 +1,22 @@
+--- a/net/minecraft/item/ItemAxe.java
++++ b/net/minecraft/item/ItemAxe.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.item;
+ 
++import carpet.settings.CarpetSettings;
+ import com.google.common.collect.Sets;
+ import com.google.common.collect.ImmutableMap.Builder;
+ import java.util.Map;
+@@ -38,7 +39,11 @@
+         BlockPos blockpos = context.getPos();
+         IBlockState iblockstate = world.getBlockState(blockpos);
+         Block block = BLOCK_STRIPPING_MAP.get(iblockstate.getBlock());
+-
++        ItemStack itemStack = context.getItem();
++        String name = itemStack.getDisplayName().getString();
++        if (!name.contains("Strip") && !name.contains("去皮") && CarpetSettings.betterWoodStrip) {
++            return EnumActionResult.PASS;
++        }
+         if (block != null)
+         {
+             EntityPlayer entityplayer = context.getPlayer();

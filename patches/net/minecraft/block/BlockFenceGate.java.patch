@@ -1,6 +1,15 @@
 --- a/net/minecraft/block/BlockFenceGate.java
 +++ b/net/minecraft/block/BlockFenceGate.java
-@@ -17,8 +17,9 @@
+@@ -1,6 +1,8 @@
+ package net.minecraft.block;
+ 
++import carpet.settings.CarpetSettings;
+ import net.minecraft.block.state.BlockFaceShape;
++import net.minecraft.block.state.BlockState;
+ import net.minecraft.block.state.IBlockState;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.init.Blocks;
+@@ -17,8 +19,9 @@
  import net.minecraft.world.IBlockReader;
  import net.minecraft.world.IWorld;
  import net.minecraft.world.World;
@@ -11,7 +20,35 @@
  {
      public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
      public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-@@ -157,6 +158,8 @@
+@@ -115,11 +118,22 @@
+     {
+         World world = context.getWorld();
+         BlockPos blockpos = context.getPos();
+-        boolean flag = world.isBlockPowered(blockpos);
+-        EnumFacing enumfacing = context.getPlacementHorizontalFacing();
+-        EnumFacing.Axis enumfacing$axis = enumfacing.getAxis();
+-        boolean flag1 = enumfacing$axis == EnumFacing.Axis.Z && (this.isWall(world.getBlockState(blockpos.west())) || this.isWall(world.getBlockState(blockpos.east()))) || enumfacing$axis == EnumFacing.Axis.X && (this.isWall(world.getBlockState(blockpos.north())) || this.isWall(world.getBlockState(blockpos.south())));
+-        return this.getDefaultState().with(HORIZONTAL_FACING, enumfacing).with(OPEN, Boolean.valueOf(flag)).with(POWERED, Boolean.valueOf(flag)).with(IN_WALL, Boolean.valueOf(flag1));
++        BlockPos blockPos = context.pos;
++        if (CarpetSettings.betterFenceGatePlacement && world.getBlockState(blockPos).getBlock() instanceof BlockFenceGate) {
++            BlockState blockState = (BlockState) world.getBlockState(blockPos);
++            boolean bl = world.isBlockPowered(blockPos) || blockState.get(OPEN);
++            boolean bl1 = world.isBlockPowered(blockPos);
++            EnumFacing direction = blockState.get(HORIZONTAL_FACING);
++            EnumFacing.Axis axis = direction.getAxis();
++            boolean bl2 = axis == EnumFacing.Axis.Z && (this.isWall(world.getBlockState(blockpos.west())) || this.isWall(world.getBlockState(blockpos.east()))) || axis == EnumFacing.Axis.X && (this.isWall(world.getBlockState(blockpos.north())) || this.isWall(world.getBlockState(blockpos.south())));
++            return this.getDefaultState().with(HORIZONTAL_FACING, direction).with(OPEN, bl).with(POWERED, bl1).with(IN_WALL, bl2);
++        } else {
++            boolean flag = world.isBlockPowered(blockpos);
++            EnumFacing enumfacing = context.getPlacementHorizontalFacing();
++            EnumFacing.Axis enumfacing$axis = enumfacing.getAxis();
++            boolean flag1 = enumfacing$axis == EnumFacing.Axis.Z && (this.isWall(world.getBlockState(blockpos.west())) || this.isWall(world.getBlockState(blockpos.east()))) || enumfacing$axis == EnumFacing.Axis.X && (this.isWall(world.getBlockState(blockpos.north())) || this.isWall(world.getBlockState(blockpos.south())));
++            return this.getDefaultState().with(HORIZONTAL_FACING, enumfacing).with(OPEN, Boolean.valueOf(flag)).with(POWERED, Boolean.valueOf(flag)).with(IN_WALL, Boolean.valueOf(flag1));
++        }
+     }
+ 
+     private boolean isWall(IBlockState p_196380_1_)
+@@ -157,6 +171,8 @@
          {
              boolean flag = worldIn.isBlockPowered(pos);
  
@@ -20,7 +57,7 @@
              if (state.get(POWERED) != flag)
              {
                  worldIn.setBlockState(pos, state.with(POWERED, Boolean.valueOf(flag)).with(OPEN, Boolean.valueOf(flag)), 2);
-@@ -185,4 +188,16 @@
+@@ -185,4 +201,16 @@
              return BlockFaceShape.UNDEFINED;
          }
      }

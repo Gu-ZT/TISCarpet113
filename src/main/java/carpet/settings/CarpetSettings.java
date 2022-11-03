@@ -1326,4 +1326,18 @@ public class CarpetSettings
             category = GCA
     )
     public static boolean fakePlayerAutoReplaceTool = false;
+
+    // 让放置的栅栏门与你点击的栅栏门拥有相同的方块状态
+    @Rule(
+            desc = "Make the placed fence gate have the same block status as the fence gate you clicked",
+            category = {GCA, EXPERIMENTAL}
+    )
+    public static boolean betterFenceGatePlacement = false;
+
+    // 仅允许名称中包含“去皮”的斧头对原木去皮
+    @Rule(
+            desc = "Only the axe with \"Strip\" in its name is allowed to peel logs",
+            category = {GCA, EXPERIMENTAL}
+    )
+    public static boolean betterWoodStrip = false;
 }

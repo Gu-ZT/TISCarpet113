@@ -1,0 +1,11 @@
+--- a/net/minecraft/item/ItemUseContext.java
++++ b/net/minecraft/item/ItemUseContext.java
+@@ -15,7 +15,7 @@
+     protected final EnumFacing face;
+     protected final World world;
+     protected final ItemStack item;
+-    protected final BlockPos pos;
++    public final BlockPos pos;
+ 
+     public ItemUseContext(EntityPlayer playerIn, ItemStack itemIn, BlockPos posIn, EnumFacing faceIn, float hitXIn, float hitYIn, float hitZIn)
+     {
