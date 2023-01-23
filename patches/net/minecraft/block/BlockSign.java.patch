@@ -1,0 +1,40 @@
+--- a/net/minecraft/block/BlockSign.java
++++ b/net/minecraft/block/BlockSign.java
+@@ -1,11 +1,14 @@
+ package net.minecraft.block;
+ 
++import carpet.settings.CarpetSettings;
+ import net.minecraft.block.state.BlockFaceShape;
+ import net.minecraft.block.state.IBlockState;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.fluid.Fluid;
+ import net.minecraft.fluid.IFluidState;
+ import net.minecraft.init.Fluids;
++import net.minecraft.init.Items;
++import net.minecraft.item.ItemStack;
+ import net.minecraft.state.BooleanProperty;
+ import net.minecraft.state.properties.BlockStateProperties;
+ import net.minecraft.tileentity.TileEntity;
+@@ -68,6 +71,22 @@
+ 
+     public boolean onBlockActivated(IBlockState state, World worldIn, BlockPos pos, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+     {
++        ItemStack itemStack = player.getHeldItem(hand);
++        String name = itemStack.getDisplayName().getString();
++        if (CarpetSettings.betterSignEditing && itemStack.getItem() == Items.FEATHER && (name.contains("pen") || name.contains("笔"))) {
++            TileEntitySign sign = (TileEntitySign)worldIn.getTileEntity(pos);
++            if (!worldIn.isRemote() && sign != null) {
++                player.openSignEditor(sign);
++            }
++            return true;
++        } else if (CarpetSettings.betterSignInteraction && this instanceof BlockWallSign) {
++            EnumFacing direction = state.get(BlockWallSign.FACING);
++            BlockPos pos1 = pos.offset(direction,-1);
++            IBlockState state1 = worldIn.getBlockState(pos1);
++            if (state1.getBlock() instanceof BlockWallSign) return false;
++            else state1.onBlockActivated(worldIn,pos1,player,hand,side, (float) (pos1.getX()+0.5),(float) (pos1.getY()+0.5),(float) (pos1.getZ()+0.5));
++            return true;
++        }
+         if (worldIn.isRemote)
+         {
+             return true;
